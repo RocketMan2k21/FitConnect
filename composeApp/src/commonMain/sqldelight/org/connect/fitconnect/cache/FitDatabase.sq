@@ -1,0 +1,145 @@
+-- Create the MuscleGroup table
+CREATE TABLE MuscleGroupDto (
+    muscle_number INTEGER PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+-- Create the Exercise table
+CREATE TABLE ExerciseDto (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    muscle_group_id INTEGER NOT NULL,
+    is_body_weight INTEGER NOT NULL DEFAULT 0, -- Boolean: 0 = false, 1 = true
+    FOREIGN KEY (muscle_group_id) REFERENCES MuscleGroupDto(muscle_number)
+);
+
+-- Create the Workout table
+CREATE TABLE WorkoutDto (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create the Set table
+CREATE TABLE SetDto (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    workout_id INTEGER NOT NULL,
+    exercise_id INTEGER NOT NULL,
+    weight REAL,
+    reps INTEGER NOT NULL,
+    FOREIGN KEY (workout_id) REFERENCES WorkoutDto(id),
+    FOREIGN KEY (exercise_id) REFERENCES ExerciseDto(id)
+);
+
+selectLastInsertedRowId:
+SELECT last_insert_rowid();
+
+selectExerciseById:
+SELECT
+    e.id,
+    e.name,
+    e.muscle_group_id,
+    e.is_body_weight
+FROM ExerciseDto e
+WHERE e.id = ?;
+
+selectSetById:
+SELECT
+    s.id,
+    s.workout_id,
+    s.exercise_id,
+    s.weight,
+    s.reps
+FROM SetDto s
+WHERE s.id = ?;
+
+selectWorkoutById:
+SELECT
+    w.id,
+    w.date
+FROM WorkoutDto w
+WHERE w.id = ?;
+
+-- Select all muscle groups
+selectAllMuscleGroups:
+SELECT *
+FROM MuscleGroupDto;
+
+-- Select all exercises with muscle group details
+selectAllExercises:
+SELECT
+    e.id,
+    e.name,
+    e.muscle_group_id,
+    e.is_body_weight
+FROM ExerciseDto e
+JOIN MuscleGroupDto m ON e.muscle_group_id = m.muscle_number;
+
+-- Select exercises by muscle group
+selectExercisesByMuscleGroup:
+SELECT
+    e.id,
+    e.name,
+    e.muscle_group_id,
+    e.is_body_weight
+FROM ExerciseDto e
+JOIN MuscleGroupDto m ON e.muscle_group_id = m.muscle_number
+WHERE m.muscle_number = ?;
+
+-- Get Sets for a specific workout
+selectSetsForWorkout:
+SELECT
+    e.name AS exercise_name,
+    s.weight,
+    s.reps
+FROM SetDto s
+JOIN ExerciseDto e ON s.exercise_id = e.id
+WHERE s.workout_id = ?;
+
+--
+
+-- Insert new exercise
+insertExercise:
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight)
+VALUES (?, ?, ?);
+
+-- Update exercise
+updateExercise:
+UPDATE ExerciseDto
+SET name = ?, muscle_group_id = ?, is_body_weight = ?
+WHERE id = ?;
+
+-- Delete exercise
+deleteExercise:
+DELETE FROM ExerciseDto
+WHERE id = ?;
+
+-- Insert new workout
+insertWorkout:
+INSERT INTO WorkoutDto DEFAULT VALUES
+;
+
+-- Delete workout and associated sets
+deleteWorkout:
+DELETE FROM WorkoutDto
+WHERE id = ?;
+
+-- Insert new set
+insertSet:
+INSERT INTO SetDto (workout_id, exercise_id, weight, reps)
+VALUES (?, ?, ?, ?);
+
+-- Update set
+updateSet:
+UPDATE SetDto
+SET exercise_id = ?, weight = ?, reps = ?
+WHERE id = ?;
+
+-- Delete set
+deleteSet:
+DELETE FROM SetDto
+WHERE id = ?;
+
+-- Select all workouts with their sets count
+selectAllWorkouts:
+SELECT *
+FROM WorkoutDto;

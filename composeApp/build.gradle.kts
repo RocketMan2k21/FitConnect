@@ -7,14 +7,14 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.realm.plugin)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
+
     }
     
     listOf(
@@ -33,16 +33,55 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.client.android)
+            implementation(libs.android.driver)
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
+            implementation(libs.multiplatform.settings.no.arg)
+            implementation(libs.multiplatform.settings.coroutines)
+            implementation(libs.kotlinx.coroutines.core)
+
+            // Voyager (Navigation)
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.screenmodel)
+            implementation(libs.voyager.transitions)
+            implementation(libs.voyager.koin)
+            // Koin
+            implementation(libs.koin.core)
+            implementation(libs.koin.test)
+
+            // Ktor (Networking and Serialization)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+
+            // Kotlin DateTime
+            implementation(libs.kotlinx.datetime)
+
+            // MongoDB Realm
+            implementation(libs.library.base)
+
+            // Stately (for state management)
+            implementation(libs.stately.common)
+
+            implementation(libs.runtime)
+
+            implementation(libs.coroutines.extensions)
+
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+            implementation(libs.native.driver)
         }
     }
 }
@@ -78,3 +117,10 @@ dependencies {
     debugImplementation(compose.uiTooling)
 }
 
+sqldelight {
+    databases {
+        create("FitDatabase") {
+            packageName.set("org.connect.fitconnect")
+        }
+    }
+}
