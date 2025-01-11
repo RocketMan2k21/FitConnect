@@ -8,10 +8,12 @@ import org.connect.fitconnect.cache.SetDto
 import org.connect.fitconnect.core.Result
 import org.connect.fitconnect.core.database.DataError
 import org.connect.fitconnect.domain.ExerciseSet
+import org.connect.fitconnect.domain.workout.Exercise
 import org.connect.fitconnect.domain.workout.Set
 import org.connect.fitconnect.domain.workout.SetRepository
 import org.connect.fitconnect.domain.workout.toExerciseSet
 import org.connect.fitconnect.domain.workout.toSet
+import org.connect.fitconnect.domain.workout.toSetDto
 
 class SetRepositorySql(
     private val setDataSource: SetDataSource
@@ -26,10 +28,19 @@ class SetRepositorySql(
             }
     }
 
+    override fun getAllSetsForExerciseAndWorkout(workoutId: Int, exerciseId: Int): Flow<Result<List<Set>, DataError>> = flow {
+        setDataSource.getSetsForWorkoutAndExercise(workoutId.toLong(), exerciseId.toLong())
+            .catch {
+                emit(Result.Error(DataError.UNKNOWN))
+            }.collect { dtos ->
+                emit(Result.Success(dtos.map { dto -> dto.toSet() }))
+            }
+    }
+
     override fun insertNewSet(
-        setDto: SetDto
+        set: Set
     ): Flow<Result<Set, DataError>> = flow {
-        setDataSource.insertNewSet(setDto)
+        setDataSource.insertNewSet(set.toSetDto())
             .catch {
                 emit(Result.Error(DataError.UNKNOWN))
             }.collect { dto ->
@@ -37,8 +48,8 @@ class SetRepositorySql(
             }
     }
 
-    override fun updateSet(currentSet: SetDto): Flow<Result<Set, DataError>> = flow {
-        setDataSource.updateSet(currentSet)
+    override fun updateSet(currentSet: Set): Flow<Result<Set, DataError>> = flow {
+        setDataSource.updateSet(currentSet.toSetDto())
             .catch {
                 emit(Result.Error(DataError.UNKNOWN))
             }.collect { dto ->

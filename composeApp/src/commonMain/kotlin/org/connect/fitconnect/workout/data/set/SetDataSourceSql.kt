@@ -19,6 +19,13 @@ class SetDataSourceSql(database: Database) : SetDataSource {
         return query.selectSetsForWorkout(workoutId).asFlow().mapToList(Dispatchers.IO)
     }
 
+    override fun getSetsForWorkoutAndExercise(
+        workoutId: Long,
+        exerciseId: Long
+    ): Flow<List<SetDto>> {
+        return query.selectSetsForExerciseAndWorkout(workoutId, exerciseId).asFlow().mapToList(Dispatchers.IO)
+    }
+
     override fun getById(id: Long): Flow<SetDto> {
         return query.selectSetById(id).asFlow().mapToOne(Dispatchers.IO)
     }

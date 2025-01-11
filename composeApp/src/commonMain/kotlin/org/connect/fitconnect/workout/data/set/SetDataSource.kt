@@ -6,6 +6,7 @@ import org.connect.fitconnect.cache.SetDto
 
 interface SetDataSource {
     fun getAllSets(workoutId : Long) : Flow<List<SelectSetsForWorkout>>
+    fun getSetsForWorkoutAndExercise(workoutId: Long, exerciseId: Long) : Flow<List<SetDto>>
     fun getById(id: Long) : Flow<SetDto>
     fun insertNewSet(setDto: SetDto) : Flow<SetDto>
     fun updateSet(setDto: SetDto) : Flow<SetDto>

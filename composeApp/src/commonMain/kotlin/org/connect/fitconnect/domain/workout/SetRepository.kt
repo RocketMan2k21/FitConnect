@@ -9,7 +9,8 @@ import org.connect.fitconnect.domain.ExerciseSet
 
 interface SetRepository {
     fun getAllSets(workoutId : Int) : Flow<Result<List<ExerciseSet>, DataError>>
-    fun insertNewSet(setDto: SetDto) : Flow<Result<Set, DataError>>
-    fun updateSet(currentSet: SetDto) : Flow<Result<Set, DataError>>
+    fun getAllSetsForExerciseAndWorkout(workoutId : Int, exerciseId : Int) : Flow<Result<List<Set>, DataError>>
+    fun insertNewSet(set: Set) : Flow<Result<Set, DataError>>
+    fun updateSet(currentSet: Set) : Flow<Result<Set, DataError>>
     fun deleteSet(id : Int) : Flow<Result<Boolean, DataError>>
 }
