@@ -7,13 +7,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import org.connect.fitconnect.cache.Database
+import org.connect.fitconnect.FitDatabase
 import org.connect.fitconnect.cache.SelectSetsForWorkout
 import org.connect.fitconnect.cache.SetDto
 
-class SetDataSourceSql(database: Database) : SetDataSource {
+class SetDataSourceSql(database: FitDatabase) : SetDataSource {
 
-    private val query = database.getDatabase().fitDatabaseQueries
+    private val query = database.fitDatabaseQueries
 
     override fun getAllSets(workoutId: Long): Flow<List<SelectSetsForWorkout>> {
         return query.selectSetsForWorkout(workoutId).asFlow().mapToList(Dispatchers.IO)

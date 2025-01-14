@@ -10,17 +10,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.connect.fitconnect.core.Result
-import org.connect.fitconnect.core.UiState
+import org.connect.fitconnect.domain.workout.Exercise
 import org.connect.fitconnect.domain.workout.ExerciseRepository
 
 class ExerciseViewModel(
     private val exerciseRepository: ExerciseRepository
 ) : ScreenModel {
 
-    private var _allExercises: MutableStateFlow<UiState> = MutableStateFlow(UiState.Idle)
-    val allExercises : StateFlow<UiState> = _allExercises.asStateFlow()
+    private var _allExercises: MutableStateFlow<ExerciseListUiState> = MutableStateFlow(ExerciseListUiState.Idle)
+    val allExercises : StateFlow<ExerciseListUiState> = _allExercises.asStateFlow()
 
     var currentExerciseId : MutableState<Long?> = mutableStateOf(null)
+        private set
+
+    var currentExercise : MutableState<Exercise?> = mutableStateOf(null)
         private set
 
     init {
@@ -29,16 +32,16 @@ class ExerciseViewModel(
 
     private fun fetchAllExercises() {
         screenModelScope.launch {
-            _allExercises.emit(UiState.Loading)
+            _allExercises.emit(ExerciseListUiState.Loading)
 
             val resource = exerciseRepository.fetchAll().first()
 
             when (resource) {
                 is Result.Error -> {
-                    _allExercises.emit(UiState.Error("Couldn't Load Exercise Data, please try again later"))
+                    _allExercises.emit(ExerciseListUiState.Error("Couldn't Load Exercise Data, please try again later"))
                 }
                 is Result.Success -> {
-                    _allExercises.emit(UiState.Success(resource.data))
+                    _allExercises.emit(ExerciseListUiState.Success(resource.data))
                 }
             }
         }
@@ -47,4 +50,12 @@ class ExerciseViewModel(
     fun onExerciseClick(exerciseId : Long) {
         currentExerciseId.value = exerciseId
     }
+
+    sealed class ExerciseListUiState{
+        data object Idle : ExerciseListUiState()
+        data object Loading : ExerciseListUiState()
+        data class Success(val data : List<Exercise>) : ExerciseListUiState()
+        data class Error(val message : String) :  ExerciseListUiState()
+    }
+
 }

@@ -1,0 +1,33 @@
+INSERT INTO MuscleGroupDto (name, muscle_number)
+VALUES
+    ('Back', 1),
+    ('Chest', 2),
+    ('Biceps', 3),
+    ('Triceps', 4),
+    ('Legs', 5),
+    ('Shoulders', 6),
+    ('Abs', 7),
+    ('Glutes', 8),
+    ('Forearms', 9),
+    ('Calves', 10);
+
+
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Bench Press', 1, 0);
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Push-ups', 1, 1);
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Incline Dumbbell Press', 1, 0);
+
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Pull-ups', 2, 1);
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Deadlift', 2, 0);
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Barbell Row', 2, 0);
+
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Squats', 3, 0);
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Lunges', 3, 0);
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Leg Press', 3, 0);
+
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Overhead Press', 4, 0);
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Lateral Raises', 4, 0);
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Front Raises', 4, 0);
+
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Bicep Curls', 5, 0);
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Tricep Dips', 5, 1);
+INSERT INTO ExerciseDto (name, muscle_group_id, is_body_weight) VALUES ('Hammer Curls', 5, 0);

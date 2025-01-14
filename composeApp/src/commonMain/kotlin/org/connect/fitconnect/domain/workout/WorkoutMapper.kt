@@ -24,7 +24,7 @@ fun MuscleGroupDto.toMuscleGroup() : MuscleGroup {
 
 fun SetDto.toSet() : Set {
     return Set(
-        id, workout_id, exercise_id, weight, reps
+        id, workout_id.toInt(), exercise_id.toInt(), weight, reps.toInt()
     )
 }
 
@@ -51,10 +51,10 @@ fun MuscleGroup.toMuscleGroupDto(): MuscleGroupDto {
 fun Set.toSetDto(): SetDto {
     return SetDto(
         id = id,
-        workout_id = workout_id,
-        exercise_id = exercise_id,
+        workout_id = workout_id.toLong(),
+        exercise_id = exercise_id.toLong(),
         weight = weight,
-        reps = reps
+        reps = reps.toLong()
     )
 }
 
@@ -67,6 +67,7 @@ fun Workout.toWorkoutDto(): WorkoutDto {
 
 fun SelectSetsForWorkout.toExerciseSet() : ExerciseSet {
     return ExerciseSet(
+        exerciseId = id,
         name = exercise_name,
         weight = weight,
         reps = reps

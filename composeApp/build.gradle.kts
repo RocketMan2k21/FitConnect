@@ -16,7 +16,7 @@ kotlin {
     androidTarget {
 
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -35,6 +35,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.android)
             implementation(libs.android.driver)
+            implementation(libs.androidx.startup.runtime)
 
         }
         commonMain.dependencies {
@@ -108,8 +109,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 

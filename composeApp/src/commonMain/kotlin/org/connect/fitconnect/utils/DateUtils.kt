@@ -3,6 +3,7 @@ package org.connect.fitconnect.utils
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format.DateTimeComponents
 import kotlinx.datetime.toLocalDateTime
 
 fun getCurrentTime() = Clock.System.now()
@@ -14,6 +15,7 @@ fun areInstantsOnSameDay(instant1: Instant, instant2: Instant, timeZone: TimeZon
 }
 
 fun String.parseToInstant(): Instant {
-    val isoDateTime = this.replace(" ", "T")
-    return Instant.parse(isoDateTime)
+    val isoFormatString = this.replace(" ", "T") + "Z"
+    return Instant.parse(isoFormatString)
 }
+

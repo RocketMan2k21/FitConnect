@@ -3,13 +3,13 @@ package org.connect.fitconnect.workout.data.set
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 
-enum class PrimaryButtonState(name : String, color : Int) {
-    SAVE("Save", Color.Green.toArgb()),
-    UPDATE("Update", Color.Green.toArgb())
+enum class PrimaryButtonState(val text : String, val color : Color) {
+    SAVE("Save", Color.Green),
+    UPDATE("Update", Color.Green)
 }
 
-enum class SecondaryButtonState(name : String, color : Int) {
-    CLEAR("Clear", Color.Blue.toArgb()),
-    DELETE("Delete", Color.Red.toArgb())
+enum class SecondaryButtonState(val text : String, val color : Color) {
+    CLEAR("Clear", Color.Blue),
+    DELETE("Delete", Color.Red)
 }
 

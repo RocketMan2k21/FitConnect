@@ -6,7 +6,7 @@ android-targetSdk = "34"
 androidx-activityCompose = "1.9.3"
 androidx-lifecycle = "2.8.4"
 compose-multiplatform = "1.7.3"
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 
 koinCore = "4.0.0"
 kotlinxCoroutinesCore = "1.9.0"
@@ -18,8 +18,10 @@ statelyCommon = "2.1.0"
 voyagerNavigator = "1.1.0-beta03"
 realm = "3.0.0"
 
-sqlDelight = "2.0.1"
+sqlDelight = "2.0.2"
 coroutinesExtensions = "2.0.2"
+startupRuntime = "1.2.0"
+
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
@@ -48,6 +50,7 @@ native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "s
 runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
 android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
 coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "coroutinesExtensions" }
+androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "startupRuntime" }
 
 
 [plugins]
