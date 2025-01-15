@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -23,38 +24,37 @@ class HomeScreenViewModel(
     private val useCases: HomeScreenUseCases
 ) : ScreenModel {
 
-    private var _allWorkouts: MutableStateFlow<WorkoutListState> = MutableStateFlow(WorkoutListState.Idle)
+    private var _allWorkouts: MutableStateFlow<WorkoutListState> =
+        MutableStateFlow(WorkoutListState.Idle)
     val allWorkouts: StateFlow<WorkoutListState> = _allWorkouts.asStateFlow()
 
-    var currentWorkoutId : MutableState<Long> = mutableStateOf(0)
-        private set
+    private var _currentWorkoutId: MutableStateFlow<Long> = MutableStateFlow(-1)
+        val currentWorkoutId: StateFlow<Long> = _currentWorkoutId.asStateFlow()
 
-    var isCurrentWorkoutPresent : MutableState<Boolean> = mutableStateOf(false)
-        private set
-
-    private var _currentWorkout : MutableStateFlow<UiState<List<ExerciseSet>>> = MutableStateFlow(UiState.Idle)
-    val currentWorkout : StateFlow<UiState<List<ExerciseSet>>> = _currentWorkout.asStateFlow()
+    private var _currentWorkout: MutableStateFlow<UiState<List<ExerciseSet>>> =
+        MutableStateFlow(UiState.Idle)
+    val currentWorkout: StateFlow<UiState<List<ExerciseSet>>> = _currentWorkout.asStateFlow()
 
     init {
-        fetchWorkouts() // To know the current workouts amount
+        fetchWorkouts()
+        // To know the current workouts amount
         // User sees one screen with workout data. On first load - shows today's day workout
     }
 
     // Loads workout data for specific date
-    private fun fetchWorkoutForTheDate(currentDate : Instant) {
+    private fun fetchWorkoutForTheDate(currentDate: Instant) {
         screenModelScope.launch {
             if (allWorkouts.value is WorkoutListState.Success) {
-                val workout = (allWorkouts.value as WorkoutListState.Success).data.filter { workout: Workout ->
-                    val workoutInstantTime = workout.date.parseToInstant()
-                    areInstantsOnSameDay(currentDate, workoutInstantTime, TimeZone.UTC)
-                }
+                val workout =
+                    (allWorkouts.value as WorkoutListState.Success).data.filter { workout: Workout ->
+                        val workoutInstantTime = workout.date.parseToInstant()
+                        areInstantsOnSameDay(currentDate, workoutInstantTime, TimeZone.UTC)
+                    }
 
                 if (workout.isNotEmpty()) {
-                    currentWorkoutId.value = workout.first().id
-                    isCurrentWorkoutPresent.value = true
+                    _currentWorkoutId.emit(workout.first().id)
                     loadWorkoutData()
                 } else {
-                    isCurrentWorkoutPresent.value = false
                     _currentWorkout.emit(UiState.Success(emptyList()))
                 }
             }
@@ -62,12 +62,13 @@ class HomeScreenViewModel(
     }
 
     private suspend fun loadWorkoutData() {
-        currentWorkoutId.value.let {
+        _currentWorkoutId.collect {
             useCases.getSetsForWorkout.invoke(it.toInt()).collectLatest { result ->
                 when (result) {
                     is Result.Error -> {
                         _currentWorkout.emit(UiState.Error("Couldn't load workout data, please try again later"))
                     }
+
                     is Result.Success -> {
                         _currentWorkout.emit(UiState.Success(result.data))
                     }
@@ -78,16 +79,16 @@ class HomeScreenViewModel(
 
     private fun fetchWorkouts() {
         screenModelScope.launch {
-            val resource = useCases.getAllWorkoutsUseCase.invoke()
+            useCases.getAllWorkoutsUseCase.invoke().collectLatest { resource ->
+                when (resource) {
+                    is Result.Error -> {
+                        _allWorkouts.emit(WorkoutListState.Error("Error while fetching workout data, please try again later"))
+                    }
 
-            when (resource) {
-                is Result.Error -> {
-                    _allWorkouts.emit(WorkoutListState.Error("Error while fetching workout data, please try again later"))
-                }
-
-                is Result.Success -> {
-                    _allWorkouts.emit(WorkoutListState.Success(resource.data))
-                    fetchWorkoutForTheDate(getCurrentTime())
+                    is Result.Success -> {
+                        _allWorkouts.emit(WorkoutListState.Success(resource.data))
+                        fetchWorkoutForTheDate(getCurrentTime())
+                    }
                 }
             }
         }
@@ -105,7 +106,7 @@ class HomeScreenViewModel(
                 }
 
                 is Result.Success -> {
-                    currentWorkoutId.value = resource.data.id
+                    _currentWorkoutId.update { resource.data.id  }
                     // Goes to exercise selection screen
                 }
             }
@@ -114,8 +115,8 @@ class HomeScreenViewModel(
 
     sealed class WorkoutListState {
         data object Idle : WorkoutListState()
-        data class Success(val data : List<Workout>) : WorkoutListState()
-        data class Error(val error : String) : WorkoutListState()
+        data class Success(val data: List<Workout>) : WorkoutListState()
+        data class Error(val error: String) : WorkoutListState()
     }
 
 }

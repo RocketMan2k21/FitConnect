@@ -1,13 +1,10 @@
 package org.connect.fitconnect.workout.data.set
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -16,7 +13,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.connect.fitconnect.core.Result
 import org.connect.fitconnect.core.UiState
-import org.connect.fitconnect.domain.workout.Exercise
 import org.connect.fitconnect.domain.workout.ExerciseRepository
 import org.connect.fitconnect.domain.workout.Set
 import org.connect.fitconnect.domain.workout.SetRepository
@@ -32,10 +28,10 @@ class SetViewModel(
     var currentSet: MutableState<Set?> = mutableStateOf(null)
         private set
 
-    var currentExerciseId: MutableState<Int> = mutableStateOf(0)
+    var currentExerciseId: MutableState<Int> = mutableStateOf(-1)
         private set
 
-    var currentWorkoutId: MutableState<Int> = mutableStateOf(0)
+    var currentWorkoutId: MutableState<Int> = mutableStateOf(-1)
         private set
 
     private var _uiState : MutableStateFlow<SetUiState> = MutableStateFlow(SetUiState())
@@ -65,9 +61,7 @@ class SetViewModel(
         }
     }
 
-    fun updateCurrentSet(set : Set) {
-        currentSet.value = set
-    }
+
 
     fun onSaveSetClick(workoutId: Int, exerciseId: Int) {
         val newSet = Set(
@@ -82,10 +76,12 @@ class SetViewModel(
 
             when(result) {
                 is Result.Error -> {
+                    println("Couldn't not add new set, please try again later")
                     _currentSetList.emit(UiState.Error("Couldn't not add new set, please try again later"))
                 }
                 is Result.Success -> {
                     val insertedSet = result.data
+                    println("Set ${insertedSet.id} was added successfully")
                    _uiState.emit(
                        SetUiState(
                            weight = insertedSet.weight ?: 0.0,
@@ -106,7 +102,6 @@ class SetViewModel(
     }
 
     private fun onUpdateClick(workoutId: Int, exerciseId: Int) {
-
         val newSet = currentSet.value?.copy(
             weight = _uiState.value.weight,
             reps = _uiState.value.reps
@@ -117,7 +112,7 @@ class SetViewModel(
 
                 when(result) {
                     is Result.Error -> {
-                        println("Couldn't not add new set, please try again later")
+                        println("Couldn't not update new set, please try again later")
                     }
                     is Result.Success -> {
                         val insertedSet = result.data
@@ -144,17 +139,37 @@ class SetViewModel(
                     }
                     is Result.Success -> {
                         println("Set ${it.id} was deleted successfully")
+                        clearCurrentSet()
                     }
                 }
             }
         }
     }
 
+    fun updateCurrentSet(set : Set) {
+        when (currentSet.value) {
+            set -> {
+                clearCurrentSet()
+            }
+            null -> {
+                switchButtons()
+                currentSet.value = set
+            }
+            else -> {
+                currentSet.value = set
+            }
+        }
+    }
+
+    private fun clearCurrentSet() {
+        currentSet.value = null
+        switchButtons()
+    }
+
     fun onSetClick() {
         screenModelScope.launch {
             currentSet.value?.let {
                 updateWeightAndRepsState(it.weight ?: 0.0, it.reps)
-                switchButtons()
             }
         }
     }
@@ -184,7 +199,7 @@ class SetViewModel(
     }
 
     fun onPrimaryButtonClick() {
-        if (currentWorkoutId.value != 0 && currentExerciseId.value != 0) {
+        if (currentWorkoutId.value != -1 && currentExerciseId.value != -1) {
             if (buttonsUiState.value.primaryButtonState == PrimaryButtonState.SAVE) {
                 onSaveSetClick(currentWorkoutId.value, currentExerciseId.value)
             } else {
@@ -194,7 +209,7 @@ class SetViewModel(
     }
 
     fun onSecondaryButtonClick() {
-        if (currentWorkoutId.value != 0 && currentExerciseId.value != 0) {
+        if (currentWorkoutId.value != -1 && currentExerciseId.value != -1) {
             if (buttonsUiState.value.secondaryButtonState == SecondaryButtonState.CLEAR) {
                 onClearClick()
             } else {
