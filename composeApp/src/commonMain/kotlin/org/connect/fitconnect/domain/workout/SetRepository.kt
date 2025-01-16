@@ -6,10 +6,13 @@ import org.connect.fitconnect.cache.SetDto
 import org.connect.fitconnect.core.database.DataError
 import org.connect.fitconnect.core.Result
 import org.connect.fitconnect.domain.ExerciseSet
+import org.connect.fitconnect.domain.SetGroupedByWorkoutDate
 
 interface SetRepository {
     fun getAllSets(workoutId : Int) : Flow<Result<List<ExerciseSet>, DataError>>
+    fun getAllSetsGroupedByDate() : Flow<Result<List<SetGroupedByWorkoutDate>, DataError>>
     fun getAllSetsForExerciseAndWorkout(workoutId : Int, exerciseId : Int) : Flow<Result<List<Set>, DataError>>
+    fun getAllSetsForExercise(exerciseId: Int) : Flow<Result<List<Set>, DataError>>
     fun insertNewSet(set: Set) : Flow<Result<Set, DataError>>
     fun updateSet(currentSet: Set) : Flow<Result<Set, DataError>>
     fun deleteSet(id : Int) : Flow<Result<Boolean, DataError>>

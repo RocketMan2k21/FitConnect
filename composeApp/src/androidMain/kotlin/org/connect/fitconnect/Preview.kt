@@ -1,9 +1,13 @@
 package org.connect.fitconnect
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import org.connect.fitconnect.domain.ExerciseSet
 import org.connect.fitconnect.domain.workout.Set
+import org.connect.fitconnect.presentation.home.CalendarView
 import org.connect.fitconnect.presentation.home.ExerciseItem
 import org.connect.fitconnect.presentation.set.SetItem
 
@@ -38,4 +42,10 @@ fun SetItemPreview() {
         setIndex = 2,
         isClicked = true
     ) { }
+}
+
+@Preview
+@Composable
+fun PreviewWeekCalendar() {
+
 }

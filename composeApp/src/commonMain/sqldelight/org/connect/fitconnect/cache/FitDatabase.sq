@@ -89,6 +89,28 @@ FROM ExerciseDto e
 JOIN MuscleGroupDto m ON e.muscle_group_id = m.muscle_number
 WHERE m.muscle_number = ?;
 
+-- Retrieve all workouts with exercises and sets grouped by date
+selectWorkoutsWithExercisesAndSetsGroupedByDate:
+SELECT
+    w.id AS workout_id,
+    w.date AS workout_date,
+    e.id AS exercise_id,
+    e.name AS exercise_name,
+    e.muscle_group_id AS muscle_group,
+    e.is_body_weight AS is_body_weight,
+    s.id AS set_id,
+    s.weight AS weight,
+    s.reps AS reps
+FROM WorkoutDto w
+JOIN SetDto s ON w.id = s.workout_id
+JOIN ExerciseDto e ON s.exercise_id = e.id
+ORDER BY w.date DESC, s.id;
+
+selectAllSetByExerciseId:
+SELECT *
+FROM SetDto s
+WHERE s.exercise_id = ?;
+
 -- Get Sets for a specific workout
 selectSetsForWorkout:
 SELECT

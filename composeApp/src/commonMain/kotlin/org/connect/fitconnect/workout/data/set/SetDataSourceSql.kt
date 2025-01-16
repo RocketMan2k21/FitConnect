@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.connect.fitconnect.FitDatabase
 import org.connect.fitconnect.cache.SelectSetsForWorkout
+import org.connect.fitconnect.cache.SelectWorkoutsWithExercisesAndSetsGroupedByDate
 import org.connect.fitconnect.cache.SetDto
 
 class SetDataSourceSql(database: FitDatabase) : SetDataSource {
@@ -24,6 +25,14 @@ class SetDataSourceSql(database: FitDatabase) : SetDataSource {
         exerciseId: Long
     ): Flow<List<SetDto>> {
         return query.selectSetsForExerciseAndWorkout(workoutId, exerciseId).asFlow().mapToList(Dispatchers.IO)
+    }
+
+    override fun getSetsGroupedByDate(): Flow<List<SelectWorkoutsWithExercisesAndSetsGroupedByDate>> {
+        return query.selectWorkoutsWithExercisesAndSetsGroupedByDate().asFlow().mapToList(Dispatchers.IO)
+    }
+
+    override fun selectSetsByExerciseId(exerciseId: Long): Flow<List<SetDto>> {
+        return query.selectAllSetByExerciseId(exerciseId).asFlow().mapToList(Dispatchers.IO)
     }
 
     override fun getById(id: Long): Flow<SetDto> {

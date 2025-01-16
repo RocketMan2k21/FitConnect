@@ -2,6 +2,7 @@ package org.connect.fitconnect.presentation.home
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,11 +29,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.koinScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import org.connect.fitconnect.core.UiState
+import org.connect.fitconnect.data.local.WeekCalendarDataSource
 import org.connect.fitconnect.di.initializeKoin
 import org.connect.fitconnect.domain.ExerciseSet
 import org.connect.fitconnect.presentation.exercise.ExerciseScreen
@@ -90,6 +93,14 @@ class HomeScreen : Screen {
                     .fillMaxSize()
                     .padding(padding)
             ) {
+                CalendarView(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .padding(bottom = 8.dp),
+                    onSelectedDate = { date ->
+                        viewModel.onDateSelectedClick(date)
+                    }
+                )
                 when (currentWorkout) {
                     is UiState.Error -> {
                         Box(

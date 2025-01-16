@@ -10,10 +10,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atTime
+import kotlinx.datetime.toInstant
 import org.connect.fitconnect.core.Result
 import org.connect.fitconnect.core.UiState
+import org.connect.fitconnect.core.WeekCalendarUiModel
 import org.connect.fitconnect.domain.ExerciseSet
 import org.connect.fitconnect.domain.workout.Workout
 import org.connect.fitconnect.utils.areInstantsOnSameDay
@@ -55,6 +60,7 @@ class HomeScreenViewModel(
                     _currentWorkoutId.emit(workout.first().id)
                     loadWorkoutData()
                 } else {
+                    _currentWorkoutId.emit(-1)
                     _currentWorkout.emit(UiState.Success(emptyList()))
                 }
             }
@@ -111,6 +117,10 @@ class HomeScreenViewModel(
                 }
             }
         }
+    }
+
+    fun onDateSelectedClick(newDate : WeekCalendarUiModel.Date) {
+        fetchWorkoutForTheDate(newDate.date.atTime(12, 30).toInstant(TimeZone.currentSystemDefault()))
     }
 
     sealed class WorkoutListState {
