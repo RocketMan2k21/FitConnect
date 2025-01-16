@@ -3,9 +3,11 @@ package org.connect.fitconnect.domain.workout
 import org.connect.fitconnect.cache.ExerciseDto
 import org.connect.fitconnect.cache.MuscleGroupDto
 import org.connect.fitconnect.cache.SelectSetsForWorkout
+import org.connect.fitconnect.cache.SelectWorkoutsWithExercisesAndSetsGroupedByDate
 import org.connect.fitconnect.cache.SetDto
 import org.connect.fitconnect.cache.WorkoutDto
 import org.connect.fitconnect.domain.ExerciseSet
+import org.connect.fitconnect.domain.SetGroupedByWorkoutDate
 
 fun ExerciseDto.toExercise() : Exercise {
     return Exercise (
@@ -71,6 +73,24 @@ fun SelectSetsForWorkout.toExerciseSet() : ExerciseSet {
         name = exercise_name,
         weight = weight,
         reps = reps
+    )
+}
+
+fun SelectWorkoutsWithExercisesAndSetsGroupedByDate.toSetGroupedByWorkoutDate () : SetGroupedByWorkoutDate {
+    return SetGroupedByWorkoutDate(
+        id = set_id.toInt(),
+        weight = weight,
+        reps = reps.toInt(),
+        exercise = Exercise(
+            id = exercise_id,
+            name = exercise_name,
+            is_body_weight = is_body_weight,
+            muscle_group_id = muscle_group
+        ),
+        workout = Workout(
+            id = workout_id,
+            date = workout_date
+        )
     )
 }
 

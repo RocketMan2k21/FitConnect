@@ -35,7 +35,6 @@ import org.connect.fitconnect.ui.setHomeScreenTextColor
 fun HomeBody(
     workoutStateList: List<ExerciseSet>, onExerciseClick: (ExerciseSet) -> Unit
 ) {
-
     val exerciseNames by derivedStateOf { workoutStateList.distinctBy { it.name } }
 
     LazyColumn(
@@ -51,7 +50,6 @@ fun HomeBody(
         }
     }
 }
-
 
 @Composable
 fun ExerciseItem(

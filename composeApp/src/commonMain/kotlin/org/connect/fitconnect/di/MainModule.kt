@@ -13,6 +13,7 @@ import org.connect.fitconnect.workout.data.exercise.ExerciseDataSource
 import org.connect.fitconnect.workout.data.exercise.ExerciseDataSourceSql
 import org.connect.fitconnect.workout.data.exercise.ExerciseRepositorySQL
 import org.connect.fitconnect.workout.data.exercise.ExerciseViewModel
+import org.connect.fitconnect.workout.data.history.SetHistoryViewModel
 import org.connect.fitconnect.workout.data.set.SetDataSource
 import org.connect.fitconnect.workout.data.set.SetDataSourceSql
 import org.connect.fitconnect.workout.data.set.SetRepositorySql
@@ -51,6 +52,7 @@ val appModule = module {
         exerciseRepository = get(),
         setRepository = get()
     )}
+    factory { SetHistoryViewModel(get()) }
 }
 
 fun initializeKoin() {

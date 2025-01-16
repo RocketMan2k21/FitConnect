@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -56,9 +57,22 @@ class ExerciseInsertion(
                                 contentDescription = "Back"
                             )
                         }
+                    },
+                    actions = {
+                        IconButton(onClick = {
+                            navigator?.push(
+                                SetHistoryScreen(
+                                    exerciseId = exerciseId,
+                                    exerciseName = exerciseName
+                                )
+                            )
+                        }) {
+                            Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "")
+                        }
                     }
                 )
-            }
+            },
+
         ) { padding ->
             Column (
                 modifier = Modifier
