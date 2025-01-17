@@ -19,7 +19,7 @@ class MuscleRepositorySql(
                 emit(Result.Error(DataError.UNKNOWN))
             }
             .collect { dtos ->
-                dtos.map { dto -> dto.toMuscleGroup() }
+                emit(Result.Success(dtos.map { dto -> dto.toMuscleGroup() }))
             }
     }
 }

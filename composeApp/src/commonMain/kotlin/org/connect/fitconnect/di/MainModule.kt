@@ -4,6 +4,7 @@ import org.connect.fitconnect.FitDatabase
 import org.connect.fitconnect.cache.DriverFactory
 import org.connect.fitconnect.cache.createDatabase
 import org.connect.fitconnect.domain.workout.ExerciseRepository
+import org.connect.fitconnect.domain.workout.MuscleGroupRepository
 import org.connect.fitconnect.domain.workout.SetRepository
 import org.connect.fitconnect.domain.workout.WorkoutRepository
 import org.connect.fitconnect.domain.workout.usecase.GetAllWorkoutUseCase
@@ -13,7 +14,11 @@ import org.connect.fitconnect.workout.data.exercise.ExerciseDataSource
 import org.connect.fitconnect.workout.data.exercise.ExerciseDataSourceSql
 import org.connect.fitconnect.workout.data.exercise.ExerciseRepositorySQL
 import org.connect.fitconnect.workout.data.exercise.ExerciseViewModel
+import org.connect.fitconnect.workout.data.exercise.NewExerciseViewModel
 import org.connect.fitconnect.workout.data.history.SetHistoryViewModel
+import org.connect.fitconnect.workout.data.muscle.MuscleDataSource
+import org.connect.fitconnect.workout.data.muscle.MuscleDataSourceSql
+import org.connect.fitconnect.workout.data.muscle.MuscleRepositorySql
 import org.connect.fitconnect.workout.data.set.SetDataSource
 import org.connect.fitconnect.workout.data.set.SetDataSourceSql
 import org.connect.fitconnect.workout.data.set.SetRepositorySql
@@ -30,10 +35,12 @@ val appModule = module {
     single<FitDatabase> { createDatabase(DriverFactory())}
     single<ExerciseDataSource>{ExerciseDataSourceSql(get())}
     single<WorkoutDataSource>{WorkoutDataSourceSql(get())}
+    single<MuscleDataSource>{MuscleDataSourceSql(get())}
     single<SetDataSource>{SetDataSourceSql(get())}
     single<WorkoutRepository> { WorkoutRepositorySql(get()) }
     single<ExerciseRepository> { ExerciseRepositorySQL(get()) }
     single<SetRepository> { SetRepositorySql(get()) }
+    single<MuscleGroupRepository> { MuscleRepositorySql(get()) }
     factory {
         HomeScreenViewModel(
             HomeScreenUseCases(
@@ -53,6 +60,7 @@ val appModule = module {
         setRepository = get()
     )}
     factory { SetHistoryViewModel(get()) }
+    factory { NewExerciseViewModel(get(), get()) }
 }
 
 fun initializeKoin() {
