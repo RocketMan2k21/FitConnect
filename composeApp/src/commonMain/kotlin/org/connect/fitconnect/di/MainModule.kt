@@ -52,7 +52,8 @@ val appModule = module {
     }
     factory {
         ExerciseViewModel(
-            exerciseRepository = get()
+            exerciseRepository = get(),
+            muscleGroupRepository = get()
         )
     }
     factory { SetViewModel (
