@@ -9,7 +9,7 @@ interface ExerciseRepository {
     fun fetchAll() : Flow<Result<List<Exercise>, DataError>>
     fun getById(id: Int) : Flow<Result<Exercise, DataError>>
     fun getExerciseByMuscleId(id : Int) : Flow<Result<List<Exercise>, DataError>>
-    fun addExercise(exerciseDto: ExerciseDto) : Flow<Result<Exercise, DataError>>
+    fun addExercise(exercise: Exercise) : Flow<Result<Exercise, DataError>>
     fun updateExercise(existingExercise: Exercise) : Flow<Result<Exercise, DataError>>
     fun deleteExercise(id: Int) : Flow<Result<Boolean, DataError>>
 }

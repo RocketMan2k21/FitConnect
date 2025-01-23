@@ -41,8 +41,8 @@ class ExerciseRepositorySQL(
         }
     }
 
-    override fun addExercise(exerciseDto: ExerciseDto): Flow<Result<Exercise, DataError>> = flow {
-        dataSource.addExercise(exerciseDto)
+    override fun addExercise(exercise: Exercise): Flow<Result<Exercise, DataError>> = flow {
+        dataSource.addExercise(exercise.toExerciseDto())
             .catch {
                 emit(Result.Error(DataError.UNKNOWN))
             }.collect { dto ->
