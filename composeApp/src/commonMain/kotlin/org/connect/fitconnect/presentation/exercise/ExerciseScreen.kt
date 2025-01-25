@@ -1,5 +1,6 @@
 package org.connect.fitconnect.presentation.exercise
 
+import SwipeToDeleteContainer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -100,7 +101,8 @@ class ExerciseScreen(private val currentWorkoutId: Int) : Screen {
                         else
                             selectedCategoryId = -1
                     },
-                    selectedCategoryId = selectedCategoryId
+                    selectedCategoryId = selectedCategoryId,
+                    onDelete = viewModel::onDragDelete
                 )
             }
         }
@@ -162,6 +164,7 @@ fun ExerciseList(
     modifier: Modifier = Modifier,
     exerciseList: ExerciseViewModel.ExerciseListUiState,
     onClick: (Exercise) -> Unit,
+    onDelete : (Int) -> Unit,
     categoryList: List<CategoryUiState>,
     onCategoryFilterSelected: (Long) -> Unit,
     selectedCategoryId : Long
@@ -206,11 +209,16 @@ fun ExerciseList(
                     }
                 }
 
-                items(data) {
-                    ExerciseItemName(
-                        exercise = it,
-                        onClick
-                    )
+                items(items = data, key = {it.id}) { city ->
+                    SwipeToDeleteContainer(
+                        item = city ,
+                        onDelete = { onDelete(it.id.toInt()) }
+                    ) {
+                        ExerciseItemName(
+                            exercise = it,
+                            onClick
+                        )
+                    }
                 }
             }
         }
@@ -228,7 +236,9 @@ fun ExerciseItemName(
             .clickable {
                 onClick(exercise)
             }
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.surface)
+        ,
         horizontalArrangement = Arrangement.Start
     ) {
         Text(

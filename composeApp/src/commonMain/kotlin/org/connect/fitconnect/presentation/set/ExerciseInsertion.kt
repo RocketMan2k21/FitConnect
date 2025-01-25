@@ -2,6 +2,7 @@ package org.connect.fitconnect.presentation.set
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -14,6 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -187,11 +190,16 @@ class ExerciseInsertion(
                 Button(onClick = { onMinusWeightClick()}) {
                     Text(text = "-")
                 }
+                val text = if (uiState.weight % 1 != 0.0) uiState.weight.toString()
+                    else uiState.weight.toInt().toString()
                 BasicTextField(
-                    value = TextFieldValue(uiState.weight.toString()),
+                    value = TextFieldValue(
+                        text,
+                        selection = TextRange(uiState.weight.toString().length)),
                     onValueChange = { onWeightValueChange(it.text) },
                     modifier = Modifier.width(80.dp),
-                    singleLine = true
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
                 Button(onClick = { onAddWeightClick() }) {
                     Text(text = "+")

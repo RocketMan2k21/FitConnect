@@ -40,7 +40,7 @@ class SetViewModel(
     private var _buttonsUiState : MutableStateFlow<ButtonsUiState> = MutableStateFlow(ButtonsUiState())
     val buttonsUiState : StateFlow<ButtonsUiState> = _buttonsUiState.asStateFlow()
 
-    private val weightIncrease = 0.25
+    private val weightIncrease = 2.5
     private val repIncrease = 1
 
     fun fetchSetsForExercise(exerciseId : Int, workoutId : Int) {
@@ -221,8 +221,11 @@ class SetViewModel(
 
     fun onWeightFieldChange(weight: String) {
         try {
-            _uiState.update {
-                _uiState.value.copy(weight = weight.toDouble())
+            val updatedWeight = if (weight.isBlank()) 0.0 else weight.toDouble()
+            if (updatedWeight >= 0) {
+                _uiState.update {
+                    _uiState.value.copy(weight = updatedWeight)
+                }
             }
         } catch (e : Exception) {
             println("Error converting string Weight to double")
@@ -231,8 +234,11 @@ class SetViewModel(
 
     fun onRepsFieldChange(reps: String) {
         try {
-            _uiState.update {
-                _uiState.value.copy(reps = reps.toInt())
+            val updatedReps= if (reps.isBlank()) 0 else reps.toInt()
+            if (updatedReps >= 0) {
+                _uiState.update {
+                    _uiState.value.copy(reps = updatedReps)
+                }
             }
         } catch (e: Exception) {
             println("Error converting string Reps to int")
@@ -246,7 +252,9 @@ class SetViewModel(
 
     fun onMinusWeightClick() {
         val currentWeight = _uiState.value.weight
-        _uiState.update { _uiState.value.copy(weight = currentWeight - weightIncrease ) }
+
+        val updatedWeight = if (currentWeight - weightIncrease > 0.0) currentWeight - weightIncrease else 0.0
+        _uiState.update { _uiState.value.copy(weight = updatedWeight ) }
     }
 
 
@@ -257,7 +265,9 @@ class SetViewModel(
 
     fun onMinusRepsClick() {
         val currentReps = _uiState.value.reps
-        _uiState.update { _uiState.value.copy(reps = currentReps - repIncrease ) }
+
+        val updatedReps = if (currentReps - repIncrease > 0) currentReps - repIncrease else 0
+        _uiState.update { _uiState.value.copy(reps = updatedReps ) }
     }
 
     data class SetUiState(

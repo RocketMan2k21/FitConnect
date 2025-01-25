@@ -102,6 +102,21 @@ class ExerciseViewModel(
         }
     }
 
+    fun onDragDelete(exerciseId : Int) {
+        screenModelScope.launch {
+            exerciseRepository.deleteExercise(id = exerciseId)
+                .first()
+
+            when(val result = exerciseRepository.deleteExercise(id = exerciseId)
+                .first()) {
+                is Result.Error -> Unit
+                is Result.Success -> {
+                    println("Exercise $exerciseId was deleted successfully")
+                }
+            }
+        }
+    }
+
     fun onSearchQueryType(newString : String) {
         if (_allExercises.value is ExerciseListUiState.Success && newString.isNotBlank()) {
             val filteredExerciseList = (_allExercises.value as ExerciseListUiState.Success).data
