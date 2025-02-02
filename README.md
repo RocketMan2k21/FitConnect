@@ -1,5 +1,18 @@
 This is a Kotlin Multiplatform project targeting Android, iOS.
 
+## Workout Logger 
+- Allows users to track workout sets for different exercises.
+- Features:
+- Selecting specific day for workout
+- Manipulating with exercise, sets, workout data
+
+### Key Technologies:
+- Kotlin, Coroutines, Flow
+- SQLDelight for storing workout data
+- Compose Multiplatform (UI)
+- Koin (DI)
+- Voyager navigation, Voyager Screen Model
+
 * `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
   It contains several subfolders:
   - `commonMain` is for code that’s common for all targets.
